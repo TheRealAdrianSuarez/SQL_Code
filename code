@@ -1,0 +1,40 @@
+Question #0 (Already done for you as an example) Select the first 2 rows from the marketing data​
+select * from Marketing_Data
+
+Question #1 Generate a query to get the sum of the clicks of the marketing data​
+SELECT SUM(clicks) AS "Total Number of Clicks"
+FROM MarketingData
+
+Question #2 Generate a query to gather the sum of revenue by store_location from the store_revenue table
+SELECT store_location as "Store Location", SUM(revenue) as "Total Revenue" 
+from storerevenue
+GROUP BY store_location
+
+Question #3 Merge these two datasets so we can see impressions, clicks, and revenue together by date and geo. Please ensure all records from each table are accounted for.​
+
+select substr(sr.store_location, -2)
+from StoreRevenue sr
+
+SELECT md."date", geo as "State", impressions as "Marketing Impressions", Clicks as "Marketing Clicks", Revenue
+from MarketingData md
+JOIN StoreRevenue sr on sr."date" = md."date" AND substr(sr.store_location, -2) = md.geo
+
+Question #4 In your opinion, what is the most efficient store and why?​
+select sr.store_location as "Store Location", sum(revenue) as "Total Revenue", sum(clicks) as "Total Clicks",
+sum(Revenue)/sum(clicks) as "Revenue Per Click"
+from storerevenue sr
+join marketingdata md on md.geo = substr(sr.store_location, -2) 
+group by sr.store_location
+Order by sum(Revenue)/sum(clicks) desc
+
+#Due to limited information, we can only compare the following data points to identify the most efficient store: impressions, clicks and total revenue. The most important factor for a business to consider is total revenue with the least cost (i.e. clicks); therefore, the most efficient store is the one which produces the most revenue with the least clicks which is the store locations in California
+
+
+Question #5 (Challenge) Generate a query to rank in order the top 10 revenue producing states​
+select substr(sr.store_location, -2) as "State", 
+        sum(Revenue) as "Revenue"
+        from storerevenue sr
+        group by substr(sr.store_location, -2)
+        order by sum(revenue) desc
+        fetch first 10 rows only
+
